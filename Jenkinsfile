@@ -3,52 +3,54 @@ pipeline {
 
     environment {
         IMAGE = "shreyalr/sh:v1"
-        CREDS = "dockerhub-creds"
-        // Ensure Jenkins can find Docker CLI
-        PATH = "/usr/local/bin:${env.PATH}"
+        // It is safer to hardcode the ID in the step, but we will keep this for reference
+        DOCKER_CREDS_ID = "dockerhub-creds"
     }
 
     stages {
-
         stage('Checkout') {
             steps {
-                // Checkout your main branch
                 git branch: 'main', url: 'https://github.com/Shreya-Rajashekara12/sh.git'
             }
         }
 
         stage('Build') {
             steps {
-                // Build Docker image
                 bat 'docker build -t devp .'
             }
         }
 
         stage('Tag') {
             steps {
-                // Tag the image for Docker Hub
-                bat "docker tag devp ${IMAGE}"
+                bat "docker tag devp %IMAGE%"
             }
         }
 
         stage('Login') {
             steps {
-                // Login to Docker Hub using Jenkins credentials
+                // We use withCredentials to securely bind your Jenkins secret to variables
                 withCredentials([usernamePassword(
-                    credentialsId: CREDS,
-                    usernameVariable: 'USER',
+                    credentialsId: 'dockerhub-creds', 
+                    usernameVariable: 'USER', 
                     passwordVariable: 'PASS'
                 )]) {
-                    bat 'echo $PASS | docker login -u $USER --password-stdin'
+                    // Windows uses %VAR% instead of $VAR
+                    bat "docker login -u %USER% -p %PASS%"
                 }
             }
         }
 
         stage('Push') {
             steps {
-                // Push the image to Docker Hub
-                bat "docker push ${IMAGE}"
+                bat "docker push %IMAGE%"
             }
+        }
+    }
+    
+    post {
+        always {
+            // Good practice: Logout after pushing to keep the agent clean
+            bat "docker logout"
         }
     }
 }
