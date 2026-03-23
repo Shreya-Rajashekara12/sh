@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE = "sowjanya2510/devp:v1"
+        IMAGE = "shreyalr/sh:v1"
         CREDS = "dockerhub-creds"
         // Ensure Jenkins can find Docker CLI
         PATH = "/usr/local/bin:${env.PATH}"
@@ -13,7 +13,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout your main branch
-                git branch: 'main', url: 'https://github.com/sjmhub25/devp.git'
+                git branch: 'main', url: 'https://github.com/Shreya-Rajashekara12/sh.git'
             }
         }
 
