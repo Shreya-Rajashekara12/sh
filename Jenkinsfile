@@ -6,6 +6,7 @@ pipeline {
         // It is safer to hardcode the ID in the step, but we will keep this for reference
         DOCKER_CREDS_ID = "dockerhub-creds"
     }
+}
 
     stages {
         stage('Checkout') {
