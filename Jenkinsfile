@@ -13,7 +13,7 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/Shreya-Rajashekara12/sh.git'
             }
         }
-
+        
         stage('Build') {
             steps {
                 bat 'docker build -t devp .'
