@@ -20,14 +20,14 @@ pipeline {
         stage('Build') {
             steps {
                 // Build Docker image
-                sh 'docker build -t devp .'
+                bat 'docker build -t devp .'
             }
         }
 
         stage('Tag') {
             steps {
                 // Tag the image for Docker Hub
-                sh "docker tag devp ${IMAGE}"
+                bat "docker tag devp ${IMAGE}"
             }
         }
 
@@ -39,7 +39,7 @@ pipeline {
                     usernameVariable: 'USER',
                     passwordVariable: 'PASS'
                 )]) {
-                    sh 'echo $PASS | docker login -u $USER --password-stdin'
+                    bat 'echo $PASS | docker login -u $USER --password-stdin'
                 }
             }
         }
@@ -47,7 +47,7 @@ pipeline {
         stage('Push') {
             steps {
                 // Push the image to Docker Hub
-                sh "docker push ${IMAGE}"
+                bat "docker push ${IMAGE}"
             }
         }
     }
